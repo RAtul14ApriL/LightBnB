@@ -36,11 +36,8 @@ exports.getUserWithEmail = getUserWithEmail;
  */
 const getUserWithId = function (id) {
   return client
-    .query(`SELECT * from users
-    WHERE id = $1`, [id])
-    .then(res => {
-      return res.rows[0];
-    })
+    .query(`SELECT * from users WHERE id = $1`, [id])
+    .then(res => res.rows[0])
     .catch(err => err.message)
 }
 exports.getUserWithId = getUserWithId;
@@ -59,7 +56,7 @@ const addUser = function (user) {
   return client
     .query(queryString, values)
     .then(res => res.rows[0])
-    .catch(err => err.stack)
+    .catch(err => err.stack);
 }
 exports.addUser = addUser;
 
@@ -71,8 +68,14 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function (guest_id, limit = 10) {
-  return getAllProperties(null, 2);
-}
+  return client
+    .query(`SELECT * FROM reservations
+    WHERE guest_id = $1
+    ORDER BY start_date DESC
+    LIMIT $2`, [guest_id, limit = 10])
+    .then(res => res.rows)
+    .catch(err => err.stack);
+};
 exports.getAllReservations = getAllReservations;
 
 /// Properties
@@ -87,8 +90,7 @@ const getAllProperties = function(options, limit = 10) {
   return client
     .query(`SELECT * FROM properties LIMIT $1`, [limit = 10])
     .then(res => res.rows)
-    .catch(err => console.log(err.message)
-    );
+    .catch(err => err.stack);
 };
 exports.getAllProperties = getAllProperties;
 
@@ -103,5 +105,5 @@ const addProperty = function (property) {
   property.id = propertyId;
   properties[propertyId] = property;
   return Promise.resolve(property);
-}
+};
 exports.addProperty = addProperty;
