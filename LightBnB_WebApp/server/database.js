@@ -71,6 +71,7 @@ const getAllReservations = function (guest_id, limit = 10) {
   return client
     .query(`SELECT * FROM reservations
     WHERE guest_id = $1
+    AND start_date < Now()::date
     ORDER BY start_date DESC
     LIMIT $2`, [guest_id, limit = 10])
     .then(res => res.rows)
