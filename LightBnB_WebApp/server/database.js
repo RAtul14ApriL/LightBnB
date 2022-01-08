@@ -115,7 +115,7 @@ const getAllProperties = function (options, limit = 10) {
 
   const values = [queryOptions.city, queryOptions.min_cost, queryOptions.max_cost, queryOptions.min_rating, limit = 10]
 
-  console.log(queryString, values);
+  // console.log(queryString, values);
 
   return pool
     .query(queryString, values)
